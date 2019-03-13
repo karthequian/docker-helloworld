@@ -1,6 +1,6 @@
 # docker-helloworld
 
-https://img.shields.io/docker/pulls/karthequian/helloworld.svg https://img.shields.io/docker/automated/karthequian/helloworld.svg https://img.shields.io/docker/build/karthequian/helloworld.svg 
+![Docker Pulls](https://img.shields.io/docker/pulls/karthequian/helloworld.svg) ![Automated Builds](https://img.shields.io/docker/automated/karthequian/helloworld.svg) ![Build Status](https://img.shields.io/docker/build/karthequian/helloworld.svg )
 
 A simple helloworld app for docker
 
