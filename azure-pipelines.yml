@@ -23,17 +23,9 @@ stages:
     - task: Docker@2
       displayName: Build an image
       inputs:
-        command: build
+        command: buildAndPush
+        repository: shehir/hem
         dockerfile: '**/Dockerfile'
         tags: |
           $(tag)
-          - task: Docker@2
-  displayName: Push image
-  inputs:
-    containerRegistry: |
-      $(dockerHub)
-    repository: $(imageName)
-    command: push
-    tags: |
-      test1
-      test2
+   
