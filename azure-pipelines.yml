@@ -11,10 +11,9 @@ resources:
 variables:
   tag: '$(Build.BuildId)'
 
-task: Docker@2
+- task: Docker@2
   inputs:
     containerRegistry: 'Docker'
-    repository: 'Hem'
+    repository: 'hem'
     command: 'buildAndPush'
     Dockerfile: '**/Dockerfile'
-   
