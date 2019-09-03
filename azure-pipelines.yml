@@ -11,21 +11,10 @@ resources:
 variables:
   tag: '$(Build.BuildId)'
 
-stages:
-- stage: Build
-  displayName: Build image
-  jobs:  
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
-    - task: Docker@2
-      displayName: Build an image
-      inputs:
-        command: buildAndPush
-        repository: shehir/hem
-        dockerfile: '**/Dockerfile'
-        tags: |
-          $(tag)
+- task: Docker@2
+  inputs:
+    containerRegistry: 'Docker'
+    repository: 'Hem'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
    
