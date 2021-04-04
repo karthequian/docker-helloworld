@@ -5,7 +5,7 @@
 
 
 # Set the base image to Ubuntu
-FROM ubuntu
+FROM ubuntu:groovy-20210325
 
 # File Author / Maintainer
 MAINTAINER Karthik Gaekwad
