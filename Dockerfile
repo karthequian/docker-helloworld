@@ -5,7 +5,7 @@
 
 
 # Set the base image to Ubuntu
-FROM ubuntu
+FROM ubuntu:rolling
 
 # File Author / Maintainer
 MAINTAINER Karthik Gaekwad
