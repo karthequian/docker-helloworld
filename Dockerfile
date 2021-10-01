@@ -5,7 +5,7 @@
 
 
 # Set the base image to Ubuntu
-FROM ubuntu
+FROM ubuntu:20.04
 
 # File Author / Maintainer
 MAINTAINER Karthik Gaekwad
