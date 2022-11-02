@@ -5,7 +5,7 @@
 
 
 # Set the base image to Ubuntu
-FROM ubuntu
+FROM ubuntu:kinetic-20220830
 
 # File Author / Maintainer
 MAINTAINER Karthik Gaekwad
