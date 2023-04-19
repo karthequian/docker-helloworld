@@ -5,7 +5,7 @@
 
 
 # Set the base image to Ubuntu
-FROM ubuntu
+FROM ubuntu:22.10
 
 # File Author / Maintainer
 MAINTAINER Karthik Gaekwad
