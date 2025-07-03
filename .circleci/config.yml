@@ -23,9 +23,9 @@ jobs:
             echo "$KUBECONFIG_CONTENT" > ~/.kube/config
 
       - run:
-          name: Deploy to Minikube
+          name: Deploy using current context
           command: |
-            kubectl config use-context minikube
+            kubectl config current-context
             kubectl apply -f deployment.yml
 
 workflows:
