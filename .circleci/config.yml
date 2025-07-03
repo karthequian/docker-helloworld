@@ -24,7 +24,7 @@ jobs:
             echo "$KUBECONFIG_CONTENT" > ~/.kube/config
       - kubernetes/install-kubectl
       - kubernetes/create-or-update-resource:
-          resource-file-path: deployment.yaml
+          resource-file-path: deployment.yml
 
 workflows:
   build-deploy:
