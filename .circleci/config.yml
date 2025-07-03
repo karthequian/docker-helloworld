@@ -10,11 +10,13 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install kubectl
+          name: Install kubectl (no sudo)
           command: |
             curl -LO https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
             chmod +x kubectl
-            mv kubectl /usr/local/bin/
+            mkdir -p ~/.local/bin
+            mv kubectl ~/.local/bin/kubectl
+            echo 'export PATH=$PATH:~/.local/bin' >> $BASH_ENV
       - run:
           name: Set Kubeconfig for remote cluster
           command: |
@@ -23,7 +25,6 @@ jobs:
       - kubernetes/install-kubectl
       - kubernetes/create-or-update-resource:
           resource-file-path: deployment.yaml
-      
 
 workflows:
   build-deploy:
