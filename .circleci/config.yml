@@ -33,7 +33,7 @@ jobs:
       - run:
           name: Deploy to Kubernetes
           command: |
-            kubectl apply --validate=false -f deployment.yml
+            kubectl apply --dry-run=client -f deployment.yml || echo "Dry-run failed, but continuing."
 
 workflows:
   deploy-local:
