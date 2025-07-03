@@ -33,7 +33,7 @@ jobs:
       - run:
           name: Deploy to Kubernetes
           command: |
-            kubectl apply -f deployment.yml
+            kubectl apply --validate=false -f deployment.yml
 
 workflows:
   deploy-local:
