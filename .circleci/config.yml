@@ -17,10 +17,10 @@ jobs:
             echo 'export PATH=$PATH:~/.local/bin' >> $BASH_ENV
 
       - run:
-          name: Load kubeconfig and set default context
+          name: Load kubeconfig from base64 and set default context
           command: |
             mkdir -p ~/.kube
-            echo "$KUBECONFIG_CONTENT" > ~/.kube/config
+            echo "$KUBECONFIG_CONTENT" | base64 -d > ~/.kube/config
             echo "Available contexts:" && kubectl config get-contexts || echo "No context info found"
             CONTEXT=$(kubectl config get-contexts -o name | head -n 1)
             if [ -n "$CONTEXT" ]; then
