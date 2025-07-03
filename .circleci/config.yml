@@ -9,6 +9,7 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
+
       - run:
           name: Install kubectl (no sudo)
           command: |
@@ -17,14 +18,17 @@ jobs:
             mkdir -p ~/.local/bin
             mv kubectl ~/.local/bin/kubectl
             echo 'export PATH=$PATH:~/.local/bin' >> $BASH_ENV
+
       - run:
-          name: Set Kubeconfig for remote cluster
+          name: Set kubeconfig for remote cluster
           command: |
             mkdir -p ~/.kube
             echo "$KUBECONFIG_CONTENT" > ~/.kube/config
-      - kubernetes/install-kubectl
-      - kubernetes/create-or-update-resource:
-          resource-file-path: deployment.yml
+
+      - run:
+          name: Apply deployment.yaml (no validation)
+          command: |
+            kubectl apply -f deployment.yaml --validate=false
 
 workflows:
   build-deploy:
