@@ -28,7 +28,7 @@ jobs:
       - run:
           name: Apply deployment.yaml (no validation)
           command: |
-            kubectl apply -f deployment.yaml --validate=false
+            kubectl apply -f deployment.yml --validate=false
 
 workflows:
   build-deploy:
