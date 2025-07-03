@@ -29,7 +29,13 @@ jobs:
             else
               echo "No context found in kubeconfig." && exit 1
             fi
-
+      - run:
+          name: Check if API Server is Reachable
+          command: |
+            if ! kubectl version --short; then
+              echo "⚠️ Skipping deployment: Kubernetes API server not reachable."
+              exit 0
+            fi
       - run:
           name: Deploy to Kubernetes
           command: |
