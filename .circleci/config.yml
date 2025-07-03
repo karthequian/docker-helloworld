@@ -1,66 +1,31 @@
 version: 2.1
 
-executors:
-  docker-executor:
-    docker:
-      - image: cimg/base:stable
-    working_directory: ~/project
+orbs:
+  kubernetes: circleci/kubernetes@1.3.1
 
 jobs:
-  build-docker-image:
-    executor: docker-executor
-    steps:
-      - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Build Docker Image
-          command: |
-            docker build -t local-app:latest .
-
-  start-kind-cluster:
-    executor: docker-executor
-    steps:
-      - checkout
-      # - run:
-      #     name: Install Kind and kubectl
-      #     command: |
-      #       curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.22.0/kind-linux-amd64
-      #       chmod +x ./kind
-      #       mv ./kind /usr/local/bin/kind
-
-      #       curl -LO https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
-      #       chmod +x kubectl
-      #       mv kubectl /usr/local/bin/
-
-      - run:
-          name: Start Kind Cluster
-          command: |
-            kind create cluster --name circleci-cluster
-
-  deploy-to-kind:
-    executor: docker-executor
+  deploy-to-remote-k8s:
+    docker:
+      - image: cimg/base:stable
     steps:
       - checkout
       - run:
-          name: Load Docker image into Kind cluster
+          name: Install kubectl
           command: |
-            kind load docker-image local-app:latest --name circleci-cluster
-
+            curl -LO https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
+            chmod +x kubectl
+            mv kubectl /usr/local/bin/
       - run:
-          name: Deploy to Kubernetes
+          name: Set Kubeconfig for remote cluster
           command: |
-            kubectl apply -f k8s/deployment.yaml
-            kubectl apply -f k8s/service.yaml
+            mkdir -p ~/.kube
+            echo "$KUBECONFIG_CONTENT" > ~/.kube/config
+      - kubernetes/install-kubectl
+      - kubernetes/create-or-update-resource:
+          resource-file-path: deployment.yaml
+      
 
 workflows:
-  version: 2
-  build-and-deploy:
+  build-deploy:
     jobs:
-      - build-docker-image
-      - start-kind-cluster:
-          requires:
-            - build-docker-image
-      - deploy-to-kind:
-          requires:
-            - start-kind-cluster
+      - deploy-to-remote-k8s
