@@ -17,15 +17,22 @@ jobs:
             echo 'export PATH=$PATH:~/.local/bin' >> $BASH_ENV
 
       - run:
-          name: Use host's Minikube config
+          name: Load kubeconfig and set default context
           command: |
             mkdir -p ~/.kube
             echo "$KUBECONFIG_CONTENT" > ~/.kube/config
+            echo "Available contexts:" && kubectl config get-contexts || echo "No context info found"
+            CONTEXT=$(kubectl config get-contexts -o name | head -n 1)
+            if [ -n "$CONTEXT" ]; then
+              echo "Setting current context to: $CONTEXT"
+              kubectl config use-context "$CONTEXT"
+            else
+              echo "No context found in kubeconfig." && exit 1
+            fi
 
       - run:
-          name: Deploy using current context
+          name: Deploy to Kubernetes
           command: |
-            kubectl config current-context
             kubectl apply -f deployment.yml
 
 workflows:
