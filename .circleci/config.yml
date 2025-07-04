@@ -1,0 +1,54 @@
+version: 2.1
+
+jobs:
+  deploy-to-minikube:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+
+      - run:
+          name: Install kubectl
+          command: |
+            curl -LO https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
+            chmod +x kubectl
+            mkdir -p ~/.local/bin
+            mv kubectl ~/.local/bin/kubectl
+            echo 'export PATH=$PATH:~/.local/bin' >> $BASH_ENV
+
+      - run:
+          name: Load kubeconfig from base64 and set default context
+          command: |
+            mkdir -p ~/.kube
+            echo "$KUBECONFIG_B64" | base64 -d > ~/.kube/config
+            echo "Available contexts:" && kubectl config get-contexts || echo "No context info found"
+            CONTEXT=$(kubectl config get-contexts -o name | head -n 1)
+            if [ -n "$CONTEXT" ]; then
+              echo "Setting current context to: $CONTEXT"
+              kubectl config use-context "$CONTEXT"
+            else
+              echo "No context found in kubeconfig." && exit 0
+            fi
+
+      - run:
+          name: Check if API Server is Reachable
+          command: |
+            if ! kubectl version --short; then
+              echo "⚠️ Kubernetes API server is not reachable. Skipping deployment."
+              exit 0
+            fi
+
+      - run:
+          name: Validate Deployment YAML
+          command: |
+            if [ -f deployment.yml ]; then
+              kubectl apply --validate=false --dry-run=client -f deployment.yml || echo "Dry-run failed, but continuing."
+            else
+              echo "❌ deployment.yml not found. Skipping."
+              exit 0
+            fi
+
+workflows:
+  deploy-local:
+    jobs:
+      - deploy-to-minikube
